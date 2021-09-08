@@ -1,0 +1,112 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:keepScreenOn="true">
+
+    <TextView
+        android:id="@+id/previous_state"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:visibility="gone"
+        android:padding="10dp"
+        android:textColor="@color/textColor" />
+
+    <TextView
+        android:text="@string/status_unknown"
+        android:id="@+id/current_state"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:padding="10dp"
+        android:textColor="@color/textColor"
+        android:background="@color/state_unknown"/>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top|end"
+        android:textSize="24sp"
+        android:visibility="gone"
+        android:padding="10dp"
+        android:textColor="@color/textColor" />
+
+    <TextView
+        android:id="@+id/debug_log"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_gravity="bottom"
+        android:gravity="bottom"
+        android:visibility="gone"
+        android:maxLines="10"
+        android:scrollbars="vertical"
+        android:textSize="20sp"
+        android:textColor="@color/textColor" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/recyclerView"
+        android:visibility="visible"
+        android:layout_marginTop="?actionBarSize"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/adapter_nearby"/>
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/spin_kit"
+        style="@style/SpinKitView.Large.FadingCircle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        app:SpinKit_Color="@color/white" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ll_buttons"
+        android:layout_marginBottom="?actionBarSize"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:layout_gravity="bottom|center"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/startBroadCast"
+            android:padding="8dp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_selector"
+            android:text="BroadCast"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_selector"
+            android:id="@+id/startRecording"
+            android:text="Start Recording"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/stopRecording"
+            android:padding="8dp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_selector"
+            android:text="Stop Recording"/>
+
+    </LinearLayout>
+
+</FrameLayout>

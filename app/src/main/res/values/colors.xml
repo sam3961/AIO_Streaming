@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#d81b60</color>
+    <color name="colorPrimaryDark">#a00037</color>
+    <color name="colorPrimaryLight">#ff5c8d</color>
+    <color name="colorAccent">#1e88e5</color>
+    <color name="colorAccentDark">#005cb2</color>
+    <color name="colorAccentLight">#6ab7ff</color>
+    <color name="colorOnPrimary">@color/white</color>
+    <color name="colorRipple">@color/white_2</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="white_2">#33FFFFFF</color>
+    <color name="textColor">#FFFFFF</color>
+
+    <color name="state_unknown">#78909C</color>
+    <color name="state_connected">#0097A7</color>
+
+    <color name="log_verbose">#FFFFFF</color>
+    <color name="log_debug">#EEEEEE</color>
+    <color name="log_warning">#E57373</color>
+    <color name="log_warning_light">#DF5A5A</color>
+    <color name="log_error">#CF1709</color>
+
+    <color name="state_searching">#B0BEC5</color>
+    <color name="state_discovering">#2196F3</color>
+    <color name="state_advertising">#EF5350</color>
+
+
+</resources>

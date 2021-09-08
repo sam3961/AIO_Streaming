@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_missing_permissions">Cannot start without required permissions</string>
+
+    <string name="toast_connected">Connected to %s</string>
+    <string name="toast_disconnected">Disconnected from %s</string>
+
+    <string name="status_unknown">Please wait</string>
+    <string name="status_connected">Connected</string>
+
+    <string name="status_searching">Looking for a device to connect to</string>
+    <string name="status_advertising">Broadcasting</string>
+<!--
+    <string name="status_discovering">Waiting For Nearby Connections.</string>
+-->
+    <string name="status_discovering">Click On Broadcast To Broadcast Signals.</string>
+    <string name="status_discovering_sound">Click on one of host to receive sound.</string>
+    <string name="app_name">AIO Streaming</string>
+    <string name="waiting_near_by">Waiting For Nearby Connections.</string>
+    <string name="title_location_permission">Location Permissions</string>
+    <string name="text_location_permission">Please allow</string>
+    <string name="ok">Ok</string>
+</resources>
