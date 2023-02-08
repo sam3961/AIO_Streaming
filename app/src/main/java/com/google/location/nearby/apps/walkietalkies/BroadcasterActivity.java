@@ -1,12 +1,10 @@
-package com.google.location.nearby.apps.walkietalkie;
+package com.google.location.nearby.apps.walkietalkies;
 
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -25,7 +23,9 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +34,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,6 +42,8 @@ import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
 import com.google.android.gms.nearby.connection.Strategy;
+import com.google.location.nearby.apps.walkietalkies.R;
+import com.google.location.nearby.apps.walkietalkies.utils.PermissionUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,9 +52,9 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import static com.google.location.nearby.apps.walkietalkie.Constants.CLIENT;
-import static com.google.location.nearby.apps.walkietalkie.Constants.HOST;
-import static com.google.location.nearby.apps.walkietalkie.Constants.USER;
+import static com.google.location.nearby.apps.walkietalkies.Constants.CLIENT;
+import static com.google.location.nearby.apps.walkietalkies.Constants.HOST;
+import static com.google.location.nearby.apps.walkietalkies.Constants.USER;
 
 /**
  * Our WalkieTalkie Activity. This Activity has 4 {@link State}s.
@@ -71,15 +72,16 @@ import static com.google.location.nearby.apps.walkietalkie.Constants.USER;
  * down the volume keys and speaking into the phone. We'll continue to advertise (if we were already
  * advertising) so that more people can connect to us.
  */
-public class MainActivityTV extends ConnectionsActivity implements  NearByConnectionsAdapter.OnItemClick {
+public class BroadcasterActivity extends ConnectionsActivity implements NearByConnectionsAdapter.OnItemClick {
     /**
      * If true, debug logs are shown on the device.
      */
     private static final boolean DEBUG = true;
-    public  ArrayList<Endpoint> endpointArrayList = new ArrayList<>();
-    private  int MEDIA_PROJECTION_REQUEST_CODE = 13;
+    public ArrayList<Endpoint> endpointArrayList = new ArrayList<>();
+    private int MEDIA_PROJECTION_REQUEST_CODE = 13;
     private MediaProjectionManager mediaProjectionManager;
-    SpinKitView progressBar ;
+    SpinKitView progressBar;
+    ImageView imageViewHome;
     private boolean isBroadCasting;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     /**
@@ -218,9 +220,13 @@ public class MainActivityTV extends ConnectionsActivity implements  NearByConnec
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_tv);
-        getSupportActionBar()
-                .setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.actionBar));
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        setContentView(R.layout.activity_broadcaster);
+//        getSupportActionBar()
+//                .setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.actionBar));
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -228,6 +234,7 @@ public class MainActivityTV extends ConnectionsActivity implements  NearByConnec
         mPreviousStateView = findViewById(R.id.previous_state);
         mCurrentStateView = findViewById(R.id.current_state);
         progressBar = findViewById(R.id.spin_kit);
+        imageViewHome = findViewById(R.id.imageViewMinimize);
 
         mDebugLogView = findViewById(R.id.debug_log);
         startBroadCast = findViewById(R.id.startBroadCast);
@@ -248,7 +255,15 @@ public class MainActivityTV extends ConnectionsActivity implements  NearByConnec
             @Override
             public void onClick(View v) {
                 setState(State.ADVERTISING);
-                postDelayed(mDiscoverRunnable,ADVERTISING_DURATION);
+                postDelayed(mDiscoverRunnable, ADVERTISING_DURATION);
+
+
+                startBroadCast.setVisibility(View.GONE);
+                //   startRecording.setVisibility(View.VISIBLE);
+                stopRecording.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                startRecording.performClick();
+
             }
         });
         startRecording.setOnClickListener(new View.OnClickListener() {
@@ -268,13 +283,20 @@ public class MainActivityTV extends ConnectionsActivity implements  NearByConnec
             }
         });
 
-        if (linearLayoutButtons.getVisibility()==View.GONE){
-            USER=Constants.HOST;
-        }else{
-            USER=Constants.CLIENT;
+        imageViewHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                minimizeApp();
+            }
+        });
+
+        if (linearLayoutButtons.getVisibility() == View.GONE) {
+            USER = Constants.HOST;
+        } else {
+            USER = Constants.CLIENT;
         }
 
-        checkLocationPermission();
+        //checkLocationPermission();
     }
 
     private void startMediaProjectionRequest() {
@@ -288,7 +310,7 @@ public class MainActivityTV extends ConnectionsActivity implements  NearByConnec
     }
 
     private void setAdapter() {
-        nearByConnectionsAdapter = new NearByConnectionsAdapter(endpointArrayList,this);
+        nearByConnectionsAdapter = new NearByConnectionsAdapter(endpointArrayList, this);
         recyclerView.setAdapter(nearByConnectionsAdapter);
     }
 
@@ -357,22 +379,22 @@ public class MainActivityTV extends ConnectionsActivity implements  NearByConnec
     protected void onEndpointDiscovered(Endpoint endpoint) {
         // We found an advertiser!
         if (!isConnecting()) {
-            if (endpointArrayList.size()>0){
-                for (int i =0;i<endpointArrayList.size();i++){
-                    if (endpointArrayList.get(i).getName().equalsIgnoreCase(endpoint.getName())){
-                        if (!endpointArrayList.get(i).getId().equalsIgnoreCase(endpoint.getId())){
+            if (endpointArrayList.size() > 0) {
+                for (int i = 0; i < endpointArrayList.size(); i++) {
+                    if (endpointArrayList.get(i).getName().equalsIgnoreCase(endpoint.getName())) {
+                        if (!endpointArrayList.get(i).getId().equalsIgnoreCase(endpoint.getId())) {
                             endpointArrayList.add(endpoint);
-                        }else{
+                        } else {
                             endpointArrayList.remove(i);
                         }
-                    }else
+                    } else
                         endpointArrayList.add(endpoint);
                 }
-            }else
+            } else
                 endpointArrayList.add(endpoint);
 
 
-            Set<Endpoint> s= new HashSet<Endpoint>();
+            Set<Endpoint> s = new HashSet<Endpoint>();
             s.addAll(endpointArrayList);
             endpointArrayList = new ArrayList<Endpoint>();
             endpointArrayList.addAll(s);
@@ -393,7 +415,7 @@ public class MainActivityTV extends ConnectionsActivity implements  NearByConnec
     @Override
     protected void onEndpointConnected(Endpoint endpoint) {
         Toast.makeText(
-                this, getString(R.string.toast_connected, endpoint.getName()), Toast.LENGTH_SHORT)
+                        this, getString(R.string.toast_connected, endpoint.getName()), Toast.LENGTH_SHORT)
                 .show();
         setState(State.CONNECTED);
     }
@@ -401,12 +423,12 @@ public class MainActivityTV extends ConnectionsActivity implements  NearByConnec
     @Override
     protected void onEndpointDisconnected(Endpoint endpoint) {
         Toast.makeText(
-                this, getString(R.string.toast_disconnected, endpoint.getName()), Toast.LENGTH_SHORT)
+                        this, getString(R.string.toast_disconnected, endpoint.getName()), Toast.LENGTH_SHORT)
                 .show();
 
         // If we lost all our endpoints, then we should reset the state of our app and go back
         // to our initial state (discovering).
-        if (USER.equalsIgnoreCase(HOST)){
+        if (USER.equalsIgnoreCase(HOST)) {
             setState(State.DISCOVERING);
         }
 /*
@@ -432,7 +454,7 @@ public class MainActivityTV extends ConnectionsActivity implements  NearByConnec
      */
     private void setState(State state) {
         if (mState == state) {
-            if (mState== State.CONNECTED &&USER.equalsIgnoreCase(CLIENT)&&isBroadCasting)
+            if (mState == State.CONNECTED && USER.equalsIgnoreCase(CLIENT) && isBroadCasting)
                 startRecording();
             logW("State set to " + state + " but already in that state");
             return;
@@ -490,11 +512,14 @@ public class MainActivityTV extends ConnectionsActivity implements  NearByConnec
                     removeCallbacks(mDiscoverRunnable);
                 }
 
-                startBroadCast.setVisibility(View.GONE);
+                //comment 498 to 503 on 15 may 22
+              /*  startBroadCast.setVisibility(View.GONE);
              //   startRecording.setVisibility(View.VISIBLE);
                 stopRecording.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
-                startRecording.performClick();
+                startRecording.performClick();*/
+
+
 //                if (isBroadCasting&&USER.equalsIgnoreCase(CLIENT)){
 //                    startRecording();
 //                }
@@ -691,7 +716,7 @@ public class MainActivityTV extends ConnectionsActivity implements  NearByConnec
      */
     @Override
     protected void onReceive(Endpoint endpoint, Payload payload) {
-        Log.d("onReceive","onReceive"+"payload");
+        Log.d("onReceive", "onReceive" + "payload");
         if (payload.getType() == Payload.Type.STREAM) {
             AudioPlayer player =
                     new AudioPlayer(payload.asStream().asInputStream()) {
@@ -940,16 +965,17 @@ public class MainActivityTV extends ConnectionsActivity implements  NearByConnec
                     @Override
                     public void run() {
                         Toast.makeText(
-                                MainActivityTV.this,
+                                BroadcasterActivity.this,
                                 "Recording Started.",
                                 Toast.LENGTH_SHORT
                         ).show();
                         progressBar.setVisibility(View.GONE);
-                        isBroadCasting=true;
+                        imageViewHome.setVisibility(View.VISIBLE);
+
+                        isBroadCasting = true;
                         startRecording();
                     }
                 }, 5000);
-
 
 
             } else {
@@ -974,43 +1000,11 @@ public class MainActivityTV extends ConnectionsActivity implements  NearByConnec
         CONNECTED
     }
 
-    public boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.title_location_permission)
-                        .setMessage(R.string.text_location_permission)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(MainActivityTV.this,
-                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                        MY_PERMISSIONS_REQUEST_LOCATION);
-                            }
-                        })
-                        .create()
-                        .show();
-
-
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
-            }
-            return false;
-        } else {
-            return true;
+    public void checkLocationPermission() {
+        if (!PermissionUtils.hasPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            PermissionUtils.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_LOCATION);
         }
     }
 
@@ -1043,5 +1037,12 @@ public class MainActivityTV extends ConnectionsActivity implements  NearByConnec
             }
 
         }
+    }
+
+    public void minimizeApp() {
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
     }
 }

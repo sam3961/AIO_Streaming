@@ -1,4 +1,4 @@
-package com.google.location.nearby.apps.walkietalkie
+package com.google.location.nearby.apps.walkietalkies
 
 import android.annotation.SuppressLint
 import android.media.*
@@ -8,7 +8,7 @@ import android.os.Process.THREAD_PRIORITY_AUDIO
 import android.os.Process.setThreadPriority
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.google.location.nearby.apps.walkietalkie.Constants.TAG
+import com.google.location.nearby.apps.walkietalkies.Constants.TAG
 import java.io.IOException
 import java.io.OutputStream
 
@@ -52,12 +52,13 @@ class AudioRecorder //Sender Class Sending audio from this class
 
         isRecording = true
         mThread = object : Thread() {
-            @SuppressLint("NewApi")
+            @SuppressLint("NewApi", "MissingPermission")
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             override fun run() {
                 setThreadPriority(THREAD_PRIORITY_AUDIO)
 
-                val config = AudioPlaybackCaptureConfiguration.Builder(AudioCaptureService.mediaProjection!!)
+
+                    val config = AudioPlaybackCaptureConfiguration.Builder(AudioCaptureService.mediaProjection!!)
                         .addMatchingUsage(AudioAttributes.USAGE_MEDIA)
                         .addMatchingUsage(AudioAttributes.USAGE_UNKNOWN)
                         .addMatchingUsage(AudioAttributes.USAGE_GAME)
@@ -71,22 +72,18 @@ class AudioRecorder //Sender Class Sending audio from this class
                             .setChannelMask(AudioFormat.CHANNEL_IN_MONO)
                         .build()
 
-/*
                 val record = AudioRecord.Builder()
                         .setAudioFormat(audioFormat)
                         .setAudioPlaybackCaptureConfig(config)
                         .setBufferSizeInBytes(buffer.size)
                         .build()
-*/
 
-                val record = AudioRecord(
-                        MediaRecorder.AudioSource.CAMCORDER,
+      /*          val record = AudioRecord(
+                        MediaRecorder.AudioSource.MIC,
                         buffer.sampleRate,
                         AudioFormat.CHANNEL_IN_MONO,
                         AudioFormat.ENCODING_PCM_16BIT,
-                        buffer.size)
-
-
+                        buffer.size)*/
 
 
                 if (record.state != AudioRecord.STATE_INITIALIZED) {

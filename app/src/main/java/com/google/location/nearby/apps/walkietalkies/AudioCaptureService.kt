@@ -1,4 +1,4 @@
-package com.google.location.nearby.apps.walkietalkie
+package com.google.location.nearby.apps.walkietalkies
 
 import android.app.Activity
 import android.app.NotificationChannel
@@ -7,24 +7,13 @@ import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.ACTION_SYNC
-import android.content.IntentFilter
 import android.media.*
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
 import android.os.IBinder
-import android.util.Log
-import kotlin.experimental.and
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import android.widget.Toast
-import java.io.*
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
 
 
 class AudioCaptureService : Service(){
@@ -56,7 +45,8 @@ class AudioCaptureService : Service(){
         // use applicationContext to avoid memory leak on Android 10.
         // see: https://partnerissuetracker.corp.google.com/issues/139732252
         mediaProjectionManager =
-                applicationContext.getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+                applicationContext.getSystemService(Context.MEDIA_PROJECTION_SERVICE)
+                        as MediaProjectionManager
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

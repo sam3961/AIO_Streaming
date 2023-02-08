@@ -1,4 +1,4 @@
-package com.google.location.nearby.apps.walkietalkie;
+package com.google.location.nearby.apps.walkietalkies;
 
 import android.Manifest;
 import android.animation.Animator;
@@ -20,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +39,7 @@ import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
 import com.google.android.gms.nearby.connection.Strategy;
+import com.google.location.nearby.apps.walkietalkies.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,9 +48,9 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import static com.google.location.nearby.apps.walkietalkie.Constants.CLIENT;
-import static com.google.location.nearby.apps.walkietalkie.Constants.HOST;
-import static com.google.location.nearby.apps.walkietalkie.Constants.USER;
+import static com.google.location.nearby.apps.walkietalkies.Constants.CLIENT;
+import static com.google.location.nearby.apps.walkietalkies.Constants.HOST;
+import static com.google.location.nearby.apps.walkietalkies.Constants.USER;
 
 /**
  * Our WalkieTalkie Activity. This Activity has 4 {@link State}s.
@@ -68,7 +68,7 @@ import static com.google.location.nearby.apps.walkietalkie.Constants.USER;
  * down the volume keys and speaking into the phone. We'll continue to advertise (if we were already
  * advertising) so that more people can connect to us.
  */
-public class MainActivity extends ConnectionsActivity implements  NearByConnectionsAdapter.OnItemClick {
+public class ReceiverActivity extends ConnectionsActivity implements  NearByConnectionsAdapter.OnItemClick {
     /**
      * If true, debug logs are shown on the device.
      */
@@ -204,20 +204,22 @@ public class MainActivity extends ConnectionsActivity implements  NearByConnecti
     /**
      * Starts discovery. Used in a postDelayed manor with {@link #mUiHandler}.
      */
-    private final Runnable mDiscoverRunnable =
-            new Runnable() {
-                @Override
-                public void run() {
-                    setState(State.DISCOVERING);
-                }
-            };
+        private final Runnable mDiscoverRunnable =
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        setState(State.DISCOVERING);
+                    }
+                };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_receiver);
+/*
         getSupportActionBar()
                 .setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.actionBar));
+*/
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -883,6 +885,8 @@ public class MainActivity extends ConnectionsActivity implements  NearByConnecti
         vibrate();
         progressBar.setVisibility(View.VISIBLE);
         connectToEndpoint(endpointArrayList.get(i));
+      //  Endpoint endpoint = new Endpoint("BIF0","Google Box");
+      //  connectToEndpoint(endpoint);
     }
 
     /**
@@ -927,7 +931,7 @@ public class MainActivity extends ConnectionsActivity implements  NearByConnecti
                     @Override
                     public void run() {
                         Toast.makeText(
-                                MainActivity.this,
+                                ReceiverActivity.this,
                                 "Recording Started.",
                                 Toast.LENGTH_SHORT
                         ).show();

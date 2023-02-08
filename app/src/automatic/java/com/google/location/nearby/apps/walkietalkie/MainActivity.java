@@ -1,4 +1,4 @@
-package com.google.location.nearby.apps.walkietalkie;
+package com.google.location.nearby.apps.walkietalkies;
 
 import android.Manifest;
 import android.animation.Animator;
@@ -135,7 +135,7 @@ public class MainActivity extends ConnectionsActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
+    setContentView(R.layout.activity_receiver);
     getSupportActionBar()
         .setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.actionBar));
 

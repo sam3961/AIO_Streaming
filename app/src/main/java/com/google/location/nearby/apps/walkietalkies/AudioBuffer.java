@@ -1,4 +1,4 @@
-package com.google.location.nearby.apps.walkietalkie;
+package com.google.location.nearby.apps.walkietalkies;
 
 /**
  * A buffer that grabs the smallest supported sample rate for {@link android.media.AudioTrack} and

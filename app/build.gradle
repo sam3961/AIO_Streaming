@@ -3,13 +3,17 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 31
     defaultConfig {
-        minSdkVersion 23
-        targetSdkVersion 29
+        applicationId "com.google.location.nearby.apps.walkietalkies"
+        minSdkVersion 26
+        targetSdkVersion 31
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
         multiDexEnabled true
+        setProperty("archivesBaseName", "AIO Streaming-$versionName " + (new Date().format("dd-MM-yy")))
+
+        buildConfigField "String", "ROLE",  '"0"' //0 for BroadCaster and 1 for Receiver
     }
     flavorDimensions "default"
    /* flavorDimensions "mode"
@@ -29,14 +33,25 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.android.gms:play-services-nearby:17.0.0'
+    implementation 'androidx.activity:activity-ktx:1.4.0'
+    def leanback_version = "1.2.0-alpha02"
 
+
+    implementation "androidx.leanback:leanback:$leanback_version"
+    implementation 'com.google.android.gms:play-services-nearby:18.3.0'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation "androidx.recyclerview:recyclerview:1.1.0"
-    implementation 'androidx.multidex:multidex:2.0.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    debugImplementation 'com.balsikandar.android:crashreporter:1.1.0'
+    implementation 'com.github.ViksaaSkool:AwesomeSplash:v1.0.0'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+   // implementation 'com.google.android.gms:play-services:12.0.1'
+
 }
 repositories {
     mavenCentral()

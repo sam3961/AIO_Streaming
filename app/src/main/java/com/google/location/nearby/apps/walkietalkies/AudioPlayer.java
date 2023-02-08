@@ -1,8 +1,8 @@
-package com.google.location.nearby.apps.walkietalkie;
+package com.google.location.nearby.apps.walkietalkies;
 
 import static android.os.Process.THREAD_PRIORITY_AUDIO;
 import static android.os.Process.setThreadPriority;
-import static com.google.location.nearby.apps.walkietalkie.Constants.TAG;
+import static com.google.location.nearby.apps.walkietalkies.Constants.TAG;
 
 import android.media.AudioFormat;
 import android.media.AudioManager;

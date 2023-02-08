@@ -1,4 +1,4 @@
-package com.google.location.nearby.apps.walkietalkie;
+package com.google.location.nearby.apps.walkietalkies;
 
 import android.os.Handler;
 import android.os.Message;
